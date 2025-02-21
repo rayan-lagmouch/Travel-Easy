@@ -15,22 +15,22 @@
                     @endif
                     <div class="mb-4 flex justify-between items-center">
                         <div class="w-1/3">
-                            <input type="text" id="searchInput" placeholder="Zoek op bestemming..." class="w-full px-4 py-2 border rounded-md">
+                            <input type="text" id="searchInput" placeholder="Search based on destination..." class="w-full px-4 py-2 border rounded-md">
                         </div>
                         <a href="{{ route('trips.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                            Nieuwe trip toevoegen
+                            Add a new trip
                         </a>
                     </div>
-                    <h3 class="text-lg font-semibold mb-4">Trip Lijst</h3>
+                    <h3 class="text-lg font-semibold mb-4">Trip List</h3>
                     @if ($trips->count() > 0)
                         <table class="w-full text-left border-collapse" id="tripsTable">
                             <thead>
                             <tr>
-                                <th class="border px-4 py-2">Bestemming</th>
-                                <th class="border px-4 py-2">Vlucht Nummer</th>
-                                <th class="border px-4 py-2">Datum Vertrek</th>
+                                <th class="border px-4 py-2">Destination</th>
+                                <th class="border px-4 py-2">Flight Number</th>
+                                <th class="border px-4 py-2">Departure Date</th>
                                 <th class="border px-4 py-2">Status</th>
-                                <th class="border px-4 py-2">Acties</th>
+                                <th class="border px-4 py-2">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -53,7 +53,7 @@
                             </tbody>
                         </table>
                     @else
-                        <p class="text-gray-500">Er zijn momenteel geen trips beschikbaar.</p>
+                        <p class="text-gray-500">There Arent any trips available at the moment</p>
                     @endif
                 </div>
             </div>
@@ -79,7 +79,7 @@
                     noResultsMessage = document.createElement("div");
                     noResultsMessage.id = "noResultsMessage";
                     noResultsMessage.className = "bg-red-500 text-white p-4 rounded-md mt-4";
-                    noResultsMessage.textContent = "Geen trips gevonden met deze bestemming.";
+                    noResultsMessage.textContent = "No trips found with this destination";
                     document.querySelector("#tripsTable").insertAdjacentElement("afterend", noResultsMessage);
                 }
             } else if (noResultsMessage) {

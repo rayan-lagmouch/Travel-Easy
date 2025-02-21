@@ -20,14 +20,13 @@
                             <input type="text" id="searchInput" placeholder="Zoek op afzender..." class="w-full px-4 py-2 border rounded-md">
                         </div>
                         <a href="{{ route('communications.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                            Nieuw bericht toevoegen
+                            Add a new message
                         </a>
                     </div>
 
-                    <h3 class="text-lg font-semibold mb-4">Berichtenlijst</h3>
+                    <h3 class="text-lg font-semibold mb-4">Messages list</h3>
 
                     @php
-                        // Tel alle communicatie-items
                         $communicationCount = 0;
                         foreach ($employees as $employee) {
                             $communicationCount += $employee->communications->count();
@@ -38,10 +37,10 @@
                         <table class="w-full text-left border-collapse" id="communicationsTable">
                             <thead>
                             <tr>
-                                <th class="border px-4 py-2">Titel</th>
-                                <th class="border px-4 py-2">Datum</th>
-                                <th class="border px-4 py-2">Afzender</th>
-                                <th class="border px-4 py-2">Acties</th>
+                                <th class="border px-4 py-2">Title</th>
+                                <th class="border px-4 py-2">Date</th>
+                                <th class="border px-4 py-2">Sender</th>
+                                <th class="border px-4 py-2">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -56,11 +55,11 @@
                                             {{ optional($communication->customer->person)->last_name }}
                                         </td>
                                         <td class="border px-4 py-2">
-                                            <a href="{{ route('communications.edit', $communication) }}" class="text-blue-500">Bewerken</a>
-                                            <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Weet je zeker dat je dit bericht wilt verwijderen?')">
+                                            <a href="{{ route('communications.edit', $communication) }}" class="text-blue-500">Edit</a>
+                                            <form action="{{ route('communications.destroy', $communication) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Are you sure you would like to delete this page')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-500">Verwijderen</button>
+                                                <button type="submit" class="text-red-500">Delete</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -69,7 +68,7 @@
                             </tbody>
                         </table>
                     @else
-                        <p class="text-gray-500">Er zijn momenteel geen berichten beschikbaar.</p>
+                        <p class="text-gray-500">There arent any messages available at the moment</p>
                     @endif
                 </div>
             </div>
@@ -83,7 +82,7 @@
 
             let found = false;
             tableRows.forEach(row => {
-                let sender = row.getElementsByTagName("td")[2].textContent.toLowerCase(); // Derde kolom bevat afzender
+                let sender = row.getElementsByTagName("td")[2].textContent.toLowerCase();
                 if (sender.includes(filter)) {
                     row.style.display = "";
                     found = true;
@@ -98,7 +97,7 @@
                     noResultsMessage = document.createElement("div");
                     noResultsMessage.id = "noResultsMessage";
                     noResultsMessage.className = "bg-red-500 text-white p-4 rounded-md mt-4";
-                    noResultsMessage.textContent = "Geen berichten gevonden met deze afzender.";
+                    noResultsMessage.textContent = "no messages found from this sender";
                     document.querySelector("#communicationsTable").insertAdjacentElement("afterend", noResultsMessage);
                 }
             } else if (noResultsMessage) {
