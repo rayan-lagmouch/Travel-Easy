@@ -58,11 +58,10 @@
                                     <td class="border px-4 py-2">
                                         <a href="#" class="text-blue-500 mr-2">Bewerken</a>
 
-                                        <form action="{{ route('bookings.delete') }}" method="POST" class="inline-block ml-2"
-                                              onsubmit="return confirm('Weet je zeker dat je deze boeking wilt verwijderen?')">
+                                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="inline-block ml-2">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-500">Verwijderen</button>
+                                            <button type="submit" class="btn btn-danger">Verwijderen</button>
                                         </form>
                                     </td>
                                 </tr>
