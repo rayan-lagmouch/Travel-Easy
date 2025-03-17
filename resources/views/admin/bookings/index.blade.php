@@ -10,35 +10,35 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <!-- ✅ Zoekveld en Toevoegknop -->
+                    <!-- ✅ Search field and Add button -->
                     <div class="mb-4 flex justify-between items-center">
                         <div class="w-1/3">
-                            <input type="text" id="searchInput" placeholder="Zoek op klantnaam..."
+                            <input type="text" id="searchInput" placeholder="Search by customer name..."
                                    class="w-full px-4 py-2 border rounded-md">
                         </div>
 
                         <a href="{{ route('admin.bookings.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                            Nieuwe Boeking
+                            New Booking
                         </a>
                     </div>
 
-                    <h3 class="text-lg font-semibold mb-4">Boekingen Overzicht</h3>
+                    <h3 class="text-lg font-semibold mb-4">Bookings Overview</h3>
 
                     @if ($bookings->isEmpty())
-                        <p class="text-gray-500">Geen boekingen gevonden.</p>
+                        <p class="text-gray-500">No bookings found.</p>
                     @else
                         <table class="w-full text-left border-collapse" id="bookingTable">
                             <thead>
                             <tr>
-                                <th class="border px-4 py-2">Klant</th>
-                                <th class="border px-4 py-2">Bestemming</th>
-                                <th class="border px-4 py-2">Stoelnummer</th>
-                                <th class="border px-4 py-2">Prijs</th>
-                                <th class="border px-4 py-2">Aantal</th>
-                                <th class="border px-4 py-2">Verzoeken</th>
-                                <th class="border px-4 py-2">Datum</th>
+                                <th class="border px-4 py-2">Customer</th>
+                                <th class="border px-4 py-2">Destination</th>
+                                <th class="border px-4 py-2">Seat Number</th>
+                                <th class="border px-4 py-2">Price</th>
+                                <th class="border px-4 py-2">Quantity</th>
+                                <th class="border px-4 py-2">Requests</th>
+                                <th class="border px-4 py-2">Date</th>
                                 <th class="border px-4 py-2">Status</th>
-                                <th class="border px-4 py-2">Acties</th>
+                                <th class="border px-4 py-2">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -53,15 +53,15 @@
                                     <td class="border px-4 py-2">{{ $booking->special_requests }}</td>
                                     <td class="border px-4 py-2">{{ $booking->purchase_date . ' - ' .$booking->purchase_time }}</td>
                                     <td class="border px-4 py-2 {{ $booking->is_active ? 'text-green-500' : 'text-red-500' }}">
-                                        {{ $booking->is_active ? 'Actief' : 'Geannuleerd' }}
+                                        {{ $booking->is_active ? 'Active' : 'Canceled' }}
                                     </td>
                                     <td class="border px-4 py-2">
-                                        <a href="#" class="text-blue-500 mr-2">Bewerken</a>
+                                        <a href="#" class="text-blue-500 mr-2">Edit</a>
 
                                         <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="inline-block ml-2">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Verwijderen</button>
+                                            <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <!-- ✅ Zoekfunctie -->
+    <!-- ✅ Search function -->
     <script>
         document.getElementById("searchInput").addEventListener("input", function() {
             let filter = this.value.toLowerCase();
@@ -84,7 +84,7 @@
             let matchFound = false;
 
             tableRows.forEach(row => {
-                let nameCell = row.getElementsByTagName("td")[0]; // Klantnaam ophalen
+                let nameCell = row.getElementsByTagName("td")[0]; // Get customer name
                 let customerName = nameCell.textContent.trim().toLowerCase();
 
                 if (customerName.includes(filter)) {
@@ -95,7 +95,7 @@
                 }
             });
 
-            // Geen resultaten tonen als niets gevonden wordt
+            // Show "No results" message if nothing is found
             let noResultRow = document.getElementById("noResultRow");
             if (noResultRow) {
                 noResultRow.remove();
@@ -104,7 +104,7 @@
             if (!matchFound) {
                 let newRow = document.createElement("tr");
                 newRow.id = "noResultRow";
-                newRow.innerHTML = `<td colspan="7" class="border px-4 py-2 text-center text-gray-500">Geen boekingen gevonden</td>`;
+                newRow.innerHTML = `<td colspan="7" class="border px-4 py-2 text-center text-gray-500">No bookings found</td>`;
                 tableBody.appendChild(newRow);
             }
         });

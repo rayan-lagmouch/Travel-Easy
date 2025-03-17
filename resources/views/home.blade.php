@@ -59,7 +59,7 @@
     </script>
 
     <!-- Hero Section met achtergrondafbeelding en overlay -->
-    <header class="relative bg-cover bg-center h-screen flex items-center justify-center text-white text-center" style="background-image: url('{{ asset('img/woman-traveler-on-the-paris-background-2023-11-27-05-28-45-utc.jpg') }}');">
+    <header class="relative bg-cover bg-center h-screen flex items-center justify-center text-white text-center" style="background-image: url('{{ asset('img/hero-image.jpg') }}');">
         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
         <div class="relative z-10 container mx-auto">
             <h1 class="text-4xl font-bold">Goedkoop en Snel Jouw Vliegtickets Boeken</h1>
@@ -98,22 +98,22 @@
             <h2 class="text-3xl font-bold text-gray-900">Top Aanbiedingen</h2>
             <div class="mt-8 grid md:grid-cols-3 gap-6 px-6">
                 <div class="bg-white p-6 rounded-lg shadow">
-                    <img src="{{ asset('img/the-statue-of-liberty-at-new-york-city-2024-12-13-18-45-27-utc.jpg') }}" alt="Aanbieding 1" class="rounded-md mb-4">
+                    <img src="{{ asset('img/statue-of-liberty.jpg') }}" alt="Aanbieding 1" class="rounded-md mb-4">
                     <h3 class="text-xl font-semibold text-primary">Speciale Deal: Amsterdam - New York</h3>
                     <p class="mt-2">Boek nu en bespaar tot 30% op je vlucht naar New York!</p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow">
-                    <img src="{{ asset('img/young-woman-at-the-pura-ulun-danu-bratan-bali-2023-11-27-04-50-33-utc.jpg') }}" alt="Aanbieding 2" class="rounded-md mb-4">
+                    <img src="{{ asset('img/bali.jpg') }}" alt="Aanbieding 2" class="rounded-md mb-4">
                     <h3 class="text-xl font-semibold text-primary">Zomeraanbieding: Bali</h3>
                     <p class="mt-2">Geniet van een tropische vakantie met kortingen op vliegtickets.</p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow">
-                    <img src="{{ asset('img/cityscape-view-of-paris-2023-11-27-05-26-13-utc.jpg') }}" alt="Aanbieding 3" class="rounded-md mb-4">
+                    <img src="{{ asset('img/paris.jpg') }}" alt="Aanbieding 3" class="rounded-md mb-4">
                     <h3 class="text-xl font-semibold text-primary">Citytrip: Parijs</h3>
                     <p class="mt-2">Ontdek de lichtstad met de beste deals op vliegtickets.</p>
                 </div>
             </div>
-            <a href="#" class="mt-6 inline-block px-6 py-3 bg-primary text-white font-semibold rounded-md hover:bg-blue-800 transition mt-8">Bekijk Alle Deals</a>
+            <a href="#" class="mt-6 inline-block px-6 py-3 bg-blue-800 text-white font-semibold rounded-md hover:bg-blue-700 transition mt-8">Bekijk Alle Deals</a>
         </div>
     </section>
 

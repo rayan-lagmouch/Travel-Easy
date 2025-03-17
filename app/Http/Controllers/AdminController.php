@@ -11,8 +11,15 @@ class AdminController extends Controller
     public function dashboard()
     {
         $users = User::with('person')->whereIn('role', ['employee', 'user'])->get();
+
+        if ($users->isEmpty()) {
+            return view('admin.dashboard', ['users' => $users, 'noAccounts' => true]);
+        }
+
         return view('admin.dashboard', compact('users'));
     }
+
+
 
 
     public function destroy($id)
@@ -34,4 +41,3 @@ class AdminController extends Controller
         return view('admin.profile', compact('admin'));
     }
 }
-

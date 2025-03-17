@@ -17,7 +17,6 @@ class InvoiceController extends Controller
 
     public function create()
     {
-        // Fetch all bookings and transform seat numbers to uppercase
         $bookings = Booking::all()->map(function ($booking) {
             $booking->seat_number = Str::upper($booking->seat_number);
             return $booking;
@@ -28,48 +27,52 @@ class InvoiceController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the request (excluding invoice_number since it will be generated)
         $request->validate([
-            'seat_number' => 'required|exists:bookings,seat_number',
+            'seat_number' => [
+                'required',
+                'exists:bookings,seat_number',
+                function ($attribute, $value, $fail) {
+                    $booking = Booking::where('seat_number', Str::upper($value))->first();
+                    if ($booking && Invoice::where('booking_id', $booking->id)->exists()) {
+                        $fail('Seat number already in use.');
+                    }
+                },
+            ],
             'invoice_date' => 'required|date',
-            'amount_ex_vat' => 'required|numeric',
-            'vat' => 'required|numeric',
-            'amount_inc_vat' => 'required|numeric',
-            'invoice_status' => 'required|string',
-            'remarks' => 'nullable|string',
+            'amount_ex_vat' => 'required|numeric|min:0',
+            'invoice_status' => 'required|string|in:pending,paid,cancelled',
+            'remarks' => 'nullable|string|max:255',
         ]);
 
-        // Find the bookings ID based on the selected seat number
-        $booking = Booking::where('seat_number', Str::upper($request->seat_number))->first();
+        $booking = Booking::where('seat_number', Str::upper($request->seat_number))->firstOrFail();
 
-        // Generate a random invoice number
-        $invoiceNumber = 'INV-' . strtoupper(uniqid());
+        // Ensure a unique invoice number
+        do {
+            $invoiceNumber = 'INV-' . strtoupper(uniqid());
+        } while (Invoice::where('invoice_number', $invoiceNumber)->exists());
 
-        // Create the invoice with the generated invoice number
+        // Auto-calculate VAT (21%) and Amount incl. VAT
+        $vat = round($request->amount_ex_vat * 0.21, 2);
+        $amount_inc_vat = round($request->amount_ex_vat + $vat, 2);
+
         Invoice::create([
             'booking_id' => $booking->id,
             'invoice_number' => $invoiceNumber,
             'invoice_date' => $request->invoice_date,
             'amount_ex_vat' => $request->amount_ex_vat,
-            'vat' => $request->vat,
-            'amount_inc_vat' => $request->amount_inc_vat,
+            'vat' => $vat,
+            'amount_inc_vat' => $amount_inc_vat,
             'invoice_status' => $request->invoice_status,
             'remarks' => $request->remarks,
         ]);
 
-        // Redirect with success message
         return redirect()->route('invoices.index')->with('success', 'Invoice created successfully!');
     }
-
     public function destroy($id)
     {
-        // Find the invoice by ID
         $invoice = Invoice::findOrFail($id);
-
-        // Delete the invoice
         $invoice->delete();
 
-        // Redirect back to the invoices index page with a success message
         return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully!');
     }
 }
