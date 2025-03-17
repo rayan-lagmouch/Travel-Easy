@@ -21,17 +21,17 @@ class User extends Authenticatable
     {
         return $this->person ? $this->person->first_name . ' ' . ($this->person->middle_name ? $this->person->middle_name . ' ' : '') . $this->person->last_name : 'N/A';
     }
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name',
-        'username',
+        'name', // Keeping the 'name' field
         'email',
         'password',
-        'role',
+        'role', // You can store the role here
         'person_id',
         'is_active'
     ];
@@ -83,3 +83,4 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 }
+

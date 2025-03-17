@@ -35,9 +35,6 @@ Route::get('/contact', function () {
 
 Route::get('/deals', [DealController::class, 'index'])->name('deals');
 
-// Registration Routes
-Route::get('/register', [RegisteredUserController::class, 'create'])->middleware('guest')->name('register');
-Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('guest');
 
 // Redirect users based on their roles if they try to access /dashboard
 Route::get('/dashboard', function () {

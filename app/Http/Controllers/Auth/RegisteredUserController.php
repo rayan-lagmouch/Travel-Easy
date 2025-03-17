@@ -52,13 +52,14 @@ class RegisteredUserController extends Controller
                 'is_active' => true, // Default value
             ]);
 
-            // Create a new user record
+            // Create a new user record (without username, using 'role' instead)
             $user = User::create([
                 'person_id' => $person->id,
                 'name' => $validated['first_name'] . ' ' . $validated['last_name'], // Combine first and last name
                 'email' => $validated['email'],
-                'username' => strtolower($validated['first_name']) . '_' . uniqid(), // Generate a unique username
+                'role' => 'user', // Default role is 'user', you can customize this as needed
                 'password' => Hash::make($validated['password']),
+                'is_active' => true, // Default value
             ]);
 
             // Trigger Registered event
@@ -74,4 +75,9 @@ class RegisteredUserController extends Controller
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+
+
+
+
+
 }
