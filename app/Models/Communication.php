@@ -12,11 +12,14 @@ class Communication extends Model
     protected $fillable = [
         'customer_id',
         'employee_id',
+        'title',
         'message',
         'sent_at',
         'is_active',
         'remarks',
+        'email',
     ];
+
 
     protected $casts = [
         'sent_at' => 'datetime',
@@ -26,6 +29,7 @@ class Communication extends Model
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
+
 
     public function customer()
     {

@@ -1,5 +1,7 @@
 <?php
 
+// app/Models/Person.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,15 +11,12 @@ class Person extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'first_name',
         'middle_name',
         'last_name',
+        'email',
+        'phone',
         'date_of_birth',
         'passport_details',
         'is_active',
@@ -29,9 +28,8 @@ class Person extends Model
         return $this->hasOne(User::class, 'person_id');
     }
 
-    public function employee()
+    public function customer()
     {
-        return $this->hasOne(Employee::class, 'person_id');
+        return $this->hasOne(Customer::class, 'person_id');
     }
-
 }

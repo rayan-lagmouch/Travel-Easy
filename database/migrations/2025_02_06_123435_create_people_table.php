@@ -9,7 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('people', function (Blueprint $table) {
             $table->id();
@@ -24,8 +24,6 @@ return new class extends Migration
             $table->text('remarks')->nullable();
             $table->timestamps();
         });
-
-
     }
 
     /**

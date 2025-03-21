@@ -14,27 +14,32 @@
                             {{ session('success') }}
                         </div>
                     @endif
+                    @if (session('error'))
+                        <div id="error-message" class="bg-red-500 text-white p-4 rounded-md mb-4">
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
                     <div class="mb-4 flex justify-between items-center">
                         <div class="w-1/3">
                             <input type="text" id="searchInput" placeholder="Search based on Last Name..." class="w-full px-4 py-2 border rounded-md">
                         </div>
-                        <a href="{{ route('admin.customers.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                            Add new Customer
+                        <a href="{{ route('admin.customers.create') }}" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                            Add Account
                         </a>
                     </div>
 
                     <h3 class="text-lg font-semibold mb-4">Customer List</h3>
 
                     @if ($customers->isEmpty())
-                        <p class="text-gray-500">There Arent any Customers Registerd at the moment</p>
+                        <p class="text-gray-500">There Aren't any Customers Registered at the moment</p>
                     @else
                         <table class="w-full text-left border-collapse" id="customerTable">
                             <thead>
                             <tr>
                                 <th class="border px-4 py-2">Name</th>
                                 <th class="border px-4 py-2">E-mail</th>
-                                <th class="border px-4 py-2">Phone Number</th>
+                                <th class="border px-4 py-2">Remarks</th>
                                 <th class="border px-4 py-2">Actions</th>
                             </tr>
                             </thead>
@@ -43,7 +48,7 @@
                                 <tr>
                                     <td class="border px-4 py-2">{{ $customer->person->first_name ?? '' }} {{ $customer->person->last_name ?? 'N/A' }}</td>
                                     <td class="border px-4 py-2">{{ $customer->person->email ?? 'No Email' }}</td>
-                                    <td class="border px-4 py-2">{{ $customer->person->phone ?? 'No phone number' }}</td>
+                                    <td class="border px-4 py-2">{{ $customer->remarks ?? 'No Remarks' }}</td>
                                     <td class="border px-4 py-2">
                                         <a href="{{ route('admin.customers.edit', $customer) }}" class="text-blue-500">Edit</a>
                                         <form action="{{ route('admin.customers.destroy', $customer) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Are you sure you want to delete this customer?')">
@@ -92,5 +97,21 @@
                 noResultsMessage.remove();
             }
         });
+
+        // Hide success message after 3 seconds
+        setTimeout(function() {
+            const successMessage = document.getElementById("success-message");
+            if (successMessage) {
+                successMessage.style.display = "none";
+            }
+        }, 3000);
+
+        // Hide error message after 3 seconds
+        setTimeout(function() {
+            const errorMessage = document.getElementById("error-message");
+            if (errorMessage) {
+                errorMessage.style.display = "none";
+            }
+        }, 3000);
     </script>
 </x-app-layout>

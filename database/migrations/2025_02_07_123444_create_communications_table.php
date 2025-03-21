@@ -13,15 +13,17 @@ return new class extends Migration
     {
         Schema::create('communications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->foreignId('customer_id')->nullable()->constrained('customers')->onDelete('cascade'); // Maak nullable
             $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
-            $table->string('title', 32);
+            $table->string('title', 100);
             $table->string('message', 255);
             $table->dateTime('sent_at');
             $table->boolean('is_active')->default(true);
             $table->string('remarks', 255)->nullable();
+            $table->string('email')->nullable();
             $table->timestamps();
         });
+
     }
 
     /**

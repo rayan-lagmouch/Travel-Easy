@@ -13,6 +13,7 @@ class CustomerSeeder extends Seeder
             'id' => 1, // Ensure this ID matches what you reference in the bookings table
         ], [
             'person_id' => 1, // References the person created in PersonSeeder
+            'email' => '123@gmail.com',
             'relation_number' => 'CUST123',
             'is_active' => true,
             'remarks' => 'Test customer',

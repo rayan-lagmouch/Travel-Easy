@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Communication;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -23,22 +24,35 @@ class CommunicationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'message' => 'required|string|max:255',
+            'title' => 'required|string|max:100',
+            'message' => 'required|string|min:10|max:255',
+            'email' => 'required|email',
             'remarks' => 'nullable|string|max:255',
         ]);
 
+        // Haal de medewerker op via authenticated user
+        $employee = Auth::user();
+
+        // Controleer of de gebruiker een medewerker is
+        if (!$employee || !$employee->employee_type) {
+            return redirect()->back()->with('error', 'Je moet als medewerker ingelogd zijn om berichten te versturen.');
+        }
+
         Communication::create([
-            'customer_id' => 1, // Replace with actual customer_id
-            'employee_id' => 1, // Replace with actual employee_id
+            'employee_id' => $employee->id,
+            'title' => $request->title,
             'message' => $request->message,
+            'email' => $request->email,
             'sent_at' => now(),
             'is_active' => true,
             'remarks' => $request->remarks,
         ]);
 
-        session()->flash('success', 'Bericht succesvol toegevoegd');
-        return redirect()->route('communications.index');
+        return redirect()->route('communications.index')->with('success', 'Bericht succesvol toegevoegd.');
     }
+
+
+
 
     public function edit(string $id)
     {
@@ -51,18 +65,17 @@ class CommunicationController extends Controller
         $communication = Communication::findOrFail($id);
 
         $request->validate([
-            'message' => 'required|string|max:255',
+            'title' => 'required|string|max:100',
+            'message' => 'required|string|min:10|max:255',
+            'email' => 'required|email',
             'remarks' => 'nullable|string|max:255',
         ]);
 
-        $communication->update([
-            'message' => $request->message,
-            'remarks' => $request->remarks,
-        ]);
+        $communication->update($request->all());
 
-        session()->flash('success', 'Bericht succesvol bijgewerkt');
-        return redirect()->route('communications.index');
+        return redirect()->route('communications.index')->with('success', 'Bericht succesvol bijgewerkt.');
     }
+
 
     public function destroy(string $id)
     {
@@ -72,4 +85,6 @@ class CommunicationController extends Controller
         session()->flash('success', 'Bericht succesvol verwijderd');
         return redirect()->route('communications.index');
     }
+
+
 }
