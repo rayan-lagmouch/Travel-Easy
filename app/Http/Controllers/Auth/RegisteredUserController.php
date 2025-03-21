@@ -36,9 +36,15 @@ class RegisteredUserController extends Controller
             'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
-            'date_of_birth' => ['required', 'date'],
+            'date_of_birth' => ['required', 'date', 'before:'.now()->subYears(18)->toDateString()], // At least 18 years old
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'date_of_birth.before' => 'You must be at least 18 years old to register.', // Custom message for date_of_birth
+            'first_name.required' => 'Please provide your first name.',
+            'last_name.required' => 'Please provide your last name.',
+            'email.required' => 'We need your email address to register.',
+            'password.required' => 'Password is required.',
         ]);
 
         try {
@@ -52,12 +58,12 @@ class RegisteredUserController extends Controller
                 'is_active' => true, // Default value
             ]);
 
-            // Create a new user record (without username, using 'role' instead)
+            // Create a new user record
             $user = User::create([
                 'person_id' => $person->id,
                 'name' => $validated['first_name'] . ' ' . $validated['last_name'], // Combine first and last name
                 'email' => $validated['email'],
-                'role' => 'user', // Default role is 'user', you can customize this as needed
+                'role' => 'user', // Default role
                 'password' => Hash::make($validated['password']),
                 'is_active' => true, // Default value
             ]);
@@ -75,6 +81,7 @@ class RegisteredUserController extends Controller
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+
 
 
 
