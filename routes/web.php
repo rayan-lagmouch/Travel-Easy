@@ -65,6 +65,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('admin.customers.destroy');
 
     // Customer Management Routes
+
     Route::get('/bookings', [BookingController::class, 'index'])->name('admin.bookings.index');
     Route::get('/bookings/create', [BookingController::class, 'create'])->name('admin.bookings.create');
     Route::post('/bookings', [BookingController::class, 'store'])->name('admin.bookings.store');
@@ -92,6 +93,10 @@ Route::middleware(['auth', 'role:employee'])->prefix('employee')->group(function
     Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
     Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
     Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
+    Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices.show');
+    Route::get('/invoices/{id}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit');
+    Route::put('/invoices/{id}', [InvoiceController::class, 'update'])->name('invoices.update');
+
 });
 
 // Trip Routes

@@ -9,32 +9,32 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form action="{{ route('bookings.store') }}" method="POST">
+                    <form action="{{ route('admin.bookings.store') }}" method="POST">
                         @csrf
 
+                        @if ($errors->any())
+                            <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         <div class="mb-4">
-                            <label for="customer_id" class="block text-sm font-medium text-gray-700">Customer ID</label>
-                            <input type="number" id="customer_id" name="customer_id" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
-                            @error('customer_id')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="trip_id" class="block text-sm font-medium text-gray-700">Trip ID</label>
-                            <input type="number" id="trip_id" name="trip_id" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
-                            @error('trip_id')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
+                            <label for="flight_number" class="block text-sm font-medium text-gray-700">Flight Number</label>
+                            <select name="flight_number" class="w-full p-3 mt-1 border rounded-md shadow-sm" required>
+                                @foreach ($trips as $trip)
+                                    <option value="{{ $trip->flight_number }}">{{ $trip->flight_number }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="mb-4">
                             <label for="seat_number" class="block text-sm font-medium text-gray-700">Seat Number</label>
-                            <input type="text" id="seat_number" name="seat_number" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
-                            @error('seat_number')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
+                            <input type="text" name="seat_number" class="w-full p-3 mt-1 border rounded-md shadow-sm" required value="{{ old('seat_number') }}">
                         </div>
+
 
                         <div class="mb-4">
                             <label for="purchase_date" class="block text-sm font-medium text-gray-700">Purchase Date</label>
@@ -44,7 +44,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-4">x
                             <label for="purchase_time" class="block text-sm font-medium text-gray-700">Purchase Time</label>
                             <input type="time" id="purchase_time" name="purchase_time" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
                             @error('purchase_time')

@@ -25,6 +25,12 @@ class InvoiceController extends Controller
         return view('employee.invoices.create', compact('bookings'));
     }
 
+    public function show($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+        return view('employee.invoices.show', compact('invoice'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -68,6 +74,58 @@ class InvoiceController extends Controller
 
         return redirect()->route('invoices.index')->with('success', 'Invoice created successfully!');
     }
+
+    public function edit($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+        $bookings = Booking::all()->map(function ($booking) {
+            $booking->seat_number = Str::upper($booking->seat_number);
+            return $booking;
+        });
+
+        return view('employee.invoices.edit', compact('invoice', 'bookings'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $invoice = Invoice::findOrFail($id);
+
+        $request->validate([
+            'seat_number' => [
+                'required',
+                'exists:bookings,seat_number',
+                function ($attribute, $value, $fail) use ($invoice) {
+                    $booking = Booking::where('seat_number', Str::upper($value))->first();
+                    if ($booking && Invoice::where('booking_id', $booking->id)->where('id', '!=', $invoice->id)->exists()) {
+                        $fail('Seat number already in use.');
+                    }
+                },
+            ],
+            'invoice_date' => 'required|date',
+            'amount_ex_vat' => 'required|numeric|min:0',
+            'invoice_status' => 'required|string|in:pending,paid,cancelled',
+            'remarks' => 'nullable|string|max:255',
+        ]);
+
+        $booking = Booking::where('seat_number', Str::upper($request->seat_number))->firstOrFail();
+
+        // Calculate VAT (21%) and total amount
+        $vat = round($request->amount_ex_vat * 0.21, 2);
+        $amount_inc_vat = round($request->amount_ex_vat + $vat, 2);
+
+        $invoice->update([
+            'booking_id' => $booking->id,
+            'invoice_date' => $request->invoice_date,
+            'amount_ex_vat' => $request->amount_ex_vat,
+            'vat' => $vat,
+            'amount_inc_vat' => $amount_inc_vat,
+            'invoice_status' => $request->invoice_status,
+            'remarks' => $request->remarks,
+        ]);
+
+        return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully!');
+    }
+
     public function destroy($id)
     {
         $invoice = Invoice::findOrFail($id);

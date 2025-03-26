@@ -42,9 +42,9 @@
                                     <td class="border px-4 py-2">{{ number_format($invoice->amount_inc_vat, 2) }}</td>
                                     <td class="border px-4 py-2">{{ ucfirst($invoice->invoice_status) }}</td>
                                     <td class="border px-4 py-2">
-                                        <a href="" class="text-blue-800">Edit</a>
+                                        <a href="{{ route('invoices.edit', $invoice->id) }}" class="text-blue-800">Edit</a>
                                         <a href="" class="text-blue-500 ml-2">Download</a>
-                                        <a href="" class="text-green-500 ml-2">Read</a>
+                                        <a href="{{ route('invoices.show', $invoice->id) }}" class="text-green-500 ml-2">Read</a>
                                         <form action="{{ route('invoices.destroy', $invoice->id) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Are you sure you want to delete this invoice?')">
                                             @csrf
                                             @method('DELETE')
