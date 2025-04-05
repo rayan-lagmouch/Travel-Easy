@@ -9,6 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+
+                    {{-- Messages --}}
                     @if (session('success'))
                         <div id="success-message" class="bg-green-500 text-white p-4 rounded-md mb-4">
                             {{ session('success') }}
@@ -20,6 +22,7 @@
                         </div>
                     @endif
 
+                    {{-- Search + Add --}}
                     <div class="mb-4 flex justify-between items-center">
                         <div class="w-1/3">
                             <input type="text" id="searchInput" placeholder="Search based on Last Name..." class="w-full px-4 py-2 border rounded-md">
@@ -39,6 +42,7 @@
                             <tr>
                                 <th class="border px-4 py-2">Name</th>
                                 <th class="border px-4 py-2">E-mail</th>
+                                <th class="border px-4 py-2">Phone</th>
                                 <th class="border px-4 py-2">Remarks</th>
                                 <th class="border px-4 py-2">Actions</th>
                             </tr>
@@ -46,8 +50,11 @@
                             <tbody>
                             @foreach ($customers as $customer)
                                 <tr>
-                                    <td class="border px-4 py-2">{{ $customer->person->first_name ?? '' }} {{ $customer->person->last_name ?? 'N/A' }}</td>
+                                    <td class="border px-4 py-2">
+                                        {{ $customer->person->first_name ?? '' }} {{ $customer->person->last_name ?? 'N/A' }}
+                                    </td>
                                     <td class="border px-4 py-2">{{ $customer->person->email ?? 'No Email' }}</td>
+                                    <td class="border px-4 py-2">{{ $customer->person->phone ?? 'No Phone' }}</td>
                                     <td class="border px-4 py-2">{{ $customer->remarks ?? 'No Remarks' }}</td>
                                     <td class="border px-4 py-2">
                                         <a href="{{ route('admin.customers.edit', $customer) }}" class="text-blue-500">Edit</a>
@@ -68,6 +75,7 @@
     </div>
 
     <script>
+        // Search filter
         document.getElementById("searchInput").addEventListener("input", function() {
             let filter = this.value.toLowerCase();
             let tableRows = document.querySelectorAll("#customerTable tbody tr");
@@ -98,20 +106,10 @@
             }
         });
 
-        // Hide success message after 3 seconds
-        setTimeout(function() {
-            const successMessage = document.getElementById("success-message");
-            if (successMessage) {
-                successMessage.style.display = "none";
-            }
-        }, 3000);
-
-        // Hide error message after 3 seconds
-        setTimeout(function() {
-            const errorMessage = document.getElementById("error-message");
-            if (errorMessage) {
-                errorMessage.style.display = "none";
-            }
+        // Hide flash messages after 3 seconds
+        setTimeout(() => {
+            document.getElementById("success-message")?.style.display = "none";
+            document.getElementById("error-message")?.style.display = "none";
         }, 3000);
     </script>
 </x-app-layout>
