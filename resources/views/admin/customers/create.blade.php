@@ -82,6 +82,18 @@
                             @enderror
                         </div>
 
+                        <!-- Active Status -->
+                        <div class="mb-4">
+                            <label for="is_active" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                            <select id="is_active" name="is_active" class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white">
+                                <option value="1" {{ old('is_active') == 1 ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ old('is_active') == 0 ? 'selected' : '' }}>Inactive</option>
+                            </select>
+                            @error('is_active')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <!-- Submit Button -->
                         <div class="mb-4">
                             <button type="submit" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600">

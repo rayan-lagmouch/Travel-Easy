@@ -62,7 +62,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/customers', [CustomerController::class, 'store'])->name('admin.customers.store');
     Route::get('/customers/{id}/edit', [CustomerController::class, 'edit'])->name('admin.customers.edit');
     Route::put('/customers/{id}', [CustomerController::class, 'update'])->name('admin.customers.update');
-    Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('admin.customers.destroy');
+    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('admin.customers.destroy');
 
     // Customer Management Routes
 

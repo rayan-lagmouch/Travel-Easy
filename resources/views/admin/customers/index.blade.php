@@ -44,6 +44,7 @@
                                 <th class="border px-4 py-2">E-mail</th>
                                 <th class="border px-4 py-2">Phone</th>
                                 <th class="border px-4 py-2">Remarks</th>
+                                <th class="border px-4 py-2">Status</th>
                                 <th class="border px-4 py-2">Actions</th>
                             </tr>
                             </thead>
@@ -57,12 +58,23 @@
                                     <td class="border px-4 py-2">{{ $customer->person->phone ?? 'No Phone' }}</td>
                                     <td class="border px-4 py-2">{{ $customer->remarks ?? 'No Remarks' }}</td>
                                     <td class="border px-4 py-2">
+                                            <span class="text-{{ $customer->is_active ? 'green' : 'red' }}-500">
+                                                {{ $customer->is_active ? 'Active' : 'Inactive' }}
+                                            </span>
+                                    </td>
+                                    <td class="border px-4 py-2">
                                         <a href="{{ route('admin.customers.edit', $customer) }}" class="text-blue-500">Edit</a>
-                                        <form action="{{ route('admin.customers.destroy', $customer) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Are you sure you want to delete this customer?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-500">Delete</button>
-                                        </form>
+
+                                        <!-- Show Delete Button only if Customer is Active -->
+                                        @if ($customer->is_active)
+                                            <form action="{{ route('admin.customers.destroy', $customer) }}" method="POST" class="inline-block ml-2" onsubmit="return confirmDelete('{{ $customer->person->first_name }} {{ $customer->person->last_name }}')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500">Delete</button>
+                                            </form>
+                                        @else
+                                            <span class="text-red-500">Inactive customer cannot be deleted</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -75,8 +87,8 @@
     </div>
 
     <script>
-        // Search filter
-        document.getElementById("searchInput").addEventListener("input", function() {
+        // Search filter functionality
+        document.getElementById("searchInput").addEventListener("input", function () {
             let filter = this.value.toLowerCase();
             let tableRows = document.querySelectorAll("#customerTable tbody tr");
 
@@ -106,10 +118,23 @@
             }
         });
 
+        // Confirm delete functionality
+        function confirmDelete(fullName) {
+            return confirm(`Are you sure you want to delete customer "${fullName}"?`);
+        }
+
         // Hide flash messages after 3 seconds
         setTimeout(() => {
-            document.getElementById("success-message")?.style.display = "none";
-            document.getElementById("error-message")?.style.display = "none";
+            const successMessage = document.getElementById("success-message");
+            const errorMessage = document.getElementById("error-message");
+
+            if (successMessage) {
+                successMessage.style.display = "none";
+            }
+            if (errorMessage) {
+                errorMessage.style.display = "none";
+            }
         }, 3000);
     </script>
+
 </x-app-layout>

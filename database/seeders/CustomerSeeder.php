@@ -4,19 +4,28 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Customer;
+use App\Models\Person; // Make sure to import the Person model to handle the foreign key relationship
 
 class CustomerSeeder extends Seeder
 {
     public function run()
     {
+        // Ensure a person exists first (this should be handled by the PersonSeeder ideally)
+        $person = Person::firstOrCreate([
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john.doe@example.com',
+            'phone' => '1234567890',
+        ]);
+
+        // Create or update customer record
         Customer::firstOrCreate([
-            'id' => 1, // Ensure this ID matches what you reference in the bookings table
+            'person_id' => $person->id, // Link to the person we just created or found
         ], [
-            'person_id' => 1, // References the person created in PersonSeeder
-            'email' => '123@gmail.com',
-            'relation_number' => 'CUST123',
-            'is_active' => true,
-            'remarks' => 'Test customer',
+            'relation_number' => 'CUST123', // Unique identifier for the customer
+            'email' => 'john.doe@example.com', // Optional, since it's nullable in migration
+            'is_active' => true, // Active status
+            'remarks' => 'Test customer', // Optional remarks
         ]);
     }
 }
