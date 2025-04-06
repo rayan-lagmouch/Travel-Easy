@@ -17,12 +17,23 @@
                                    class="w-full px-4 py-2 border rounded-md">
                         </div>
 
-                        <a href="{{ route('admin.bookings.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                        <a href="{{ route('employee.bookings.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
                             New Booking
                         </a>
                     </div>
 
                     <h3 class="text-lg font-semibold mb-4">Bookings Overview</h3>
+                    @if (session('success'))
+                        <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
                     @if ($bookings->isEmpty())
                         <p class="text-gray-500">No bookings found.</p>
@@ -58,11 +69,21 @@
                                     <td class="border px-4 py-2">
                                         <a href="#" class="text-blue-500 mr-2">Edit</a>
 
-                                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="inline-block ml-2">
+                                        <form action="{{ route('employee.bookings.destroy', $booking->id) }}" method="POST" class="inline-block ml-2">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
+                                        <form action="{{ route('employee.bookings.cancel', $booking->id) }}" method="POST" class="inline-block ml-2">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
+                                                    onclick="return confirm('Are you sure you want to cancel this booking?')"
+                                                    class="text-orange-500 hover:text-orange-700">
+                                                Cancel
+                                            </button>
+                                        </form>
+
                                     </td>
                                 </tr>
                             @endforeach

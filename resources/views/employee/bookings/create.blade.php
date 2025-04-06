@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form action="{{ route('admin.bookings.store') }}" method="POST">
+                    <form action="{{ route('employee.bookings.store') }}" method="POST">
                         @csrf
 
                         @if ($errors->any())
@@ -35,7 +35,6 @@
                             <input type="text" name="seat_number" class="w-full p-3 mt-1 border rounded-md shadow-sm" required value="{{ old('seat_number') }}">
                         </div>
 
-
                         <div class="mb-4">
                             <label for="purchase_date" class="block text-sm font-medium text-gray-700">Purchase Date</label>
                             <input type="date" id="purchase_date" name="purchase_date" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
@@ -44,7 +43,7 @@
                             @enderror
                         </div>
 
-                        <div class="mb-4">x
+                        <div class="mb-4">
                             <label for="purchase_time" class="block text-sm font-medium text-gray-700">Purchase Time</label>
                             <input type="time" id="purchase_time" name="purchase_time" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
                             @error('purchase_time')

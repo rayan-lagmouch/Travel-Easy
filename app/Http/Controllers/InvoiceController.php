@@ -2,13 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Booking;
 use Illuminate\Support\Str;
 
+
 class InvoiceController extends Controller
 {
+
+
+
+public function downloadPDF($id)
+{
+    $invoice = Invoice::findOrFail($id);
+
+    $pdf = PDF::loadView('employee.invoices.pdf', compact('invoice'));
+
+    return $pdf->download('invoice-' . $invoice->invoice_number . '.pdf');
+}
+
     public function index()
     {
         $invoices = Invoice::all();
@@ -30,6 +44,24 @@ class InvoiceController extends Controller
         $invoice = Invoice::findOrFail($id);
         return view('employee.invoices.show', compact('invoice'));
     }
+
+    public function cancel($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+
+        // Check if it's already cancelled
+        if ($invoice->invoice_status === 'cancelled') {
+            return redirect()->route('invoices.index')->with('error', 'Invoice already cancelled.');
+        }
+
+        // Otherwise, cancel it
+        $invoice->update([
+            'invoice_status' => 'cancelled'
+        ]);
+
+        return redirect()->route('invoices.index')->with('success', 'Factuur succesvol geannuleerd!');
+    }
+
 
     public function store(Request $request)
     {

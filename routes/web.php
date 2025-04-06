@@ -66,12 +66,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     // Customer Management Routes
 
-    Route::get('/bookings', [BookingController::class, 'index'])->name('admin.bookings.index');
-    Route::get('/bookings/create', [BookingController::class, 'create'])->name('admin.bookings.create');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('admin.bookings.store');
-    Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('admin.bookings.edit');
-    Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('admin.bookings.update');
-    Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('admin.bookings.destroy');
+
 });
 
 // General user profile routes
@@ -96,8 +91,19 @@ Route::middleware(['auth', 'role:employee'])->prefix('employee')->group(function
     Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices.show');
     Route::get('/invoices/{id}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit');
     Route::put('/invoices/{id}', [InvoiceController::class, 'update'])->name('invoices.update');
+    Route::get('/invoices/{id}/download', [InvoiceController::class, 'downloadPDF'])->name('invoices.download');
+    Route::patch('/invoices/{id}/cancel', [InvoiceController::class, 'cancel'])->name('invoices.cancel');
 
 });
+
+// bookings
+Route::get('/bookings', [BookingController::class, 'index'])->name('employee.bookings.index');
+Route::get('/bookings/create', [BookingController::class, 'create'])->name('employee.bookings.create');
+Route::post('/bookings', [BookingController::class, 'store'])->name('employee.bookings.store');
+Route::patch('/employee/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('employee.bookings.cancel');
+Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('employee.bookings.edit');
+Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('employee.bookings.update');
+Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('employee.bookings.destroy');
 
 // Trip Routes
 Route::middleware(['auth'])->group(function () {
