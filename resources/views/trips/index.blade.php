@@ -41,11 +41,11 @@
                                     <td class="border px-4 py-2">{{ $trip->departure_date }}</td>
                                     <td class="border px-4 py-2">{{ $trip->trip_status }}</td>
                                     <td class="border px-4 py-2">
-                                        <a href="{{ route('trips.edit', $trip) }}" class="text-blue-500">Bewerken</a>
-                                        <form action="{{ route('trips.destroy', $trip) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Weet je zeker dat je deze trip wilt verwijderen?')">
+                                        <a href="{{ route('trips.edit', $trip) }}" class="text-blue-500">Edit</a>
+                                        <form action="{{ route('trips.destroy', $trip) }}" method="POST" class="inline-block ml-2" onsubmit="return confirm('Are you sure you want to delete this trip?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-500">Verwijderen</button>
+                                            <button type="submit" class="text-red-500">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -53,7 +53,7 @@
                             </tbody>
                         </table>
                     @else
-                        <p class="text-gray-500">There Arent any trips available at the moment</p>
+                        <p class="text-gray-500">There are no trips available at the moment.</p>
                     @endif
                 </div>
             </div>

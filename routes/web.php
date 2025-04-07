@@ -71,7 +71,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/bookings', [BookingController::class, 'store'])->name('admin.bookings.store');
     Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('admin.bookings.edit');
     Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('admin.bookings.update');
-    Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('admin.bookings.destroy');
+    Route::delete('/admin/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
 });
 
 // General user profile routes

@@ -3,33 +3,103 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trip;
+use App\Models\Employee;
+use App\Models\Location;
 use Illuminate\Http\Request;
 
 class TripController extends Controller
 {
-
-
-    // Toon alle trips
-    public function index()
+    // Show all trips with search functionality (optional)
+    public function index(Request $request)
     {
-        return view('trips.index', [
-            'trips' => Trip::with(['employee', 'departure', 'destination'])->get()
-        ]);
+        $query = Trip::with(['employee', 'departure', 'destination']); // Eager load relationships
+
+        // Optionally, you can add search functionality here (e.g., filter by status or employee)
+        if ($request->has('search')) {
+            $query->whereHas('employee', function ($q) use ($request) {
+                $q->where('last_name', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Fetch all trips
+        $trips = $query->get();
+
+        return view('trips.index', compact('trips'));
     }
 
-    // Toon formulier om een trip toe te voegen
+    // Show the form to add a new trip
     public function create()
     {
-        return view('trips.create');
+        $employees = Employee::all(); // Assuming Employee model exists
+        $locations = Location::all(); // Assuming Location model exists
+
+        return view('trips.create', compact('employees', 'locations'));
     }
 
-    // Sla een nieuwe trip op
+    // Store a new trip
     public function store(Request $request)
     {
-        $request->validate([
-            'employee_id' => 'required|integer',
-            'departure_id' => 'required|integer',
-            'destination_id' => 'required|integer',
+        $validated = $request->validate([
+            'employee_id' => 'required|integer|exists:employees,id',
+            'departure_id' => 'required|integer|exists:locations,id',
+            'destination_id' => 'required|integer|exists:locations,id',
+            'flight_number' => 'required|string|max:255',
+            'departure_date' => 'required|date',
+            'departure_time' => 'required|date_format:H:i',
+            'arrival_date' => 'required|date',
+            'arrival_time' => 'required|date_format:H:i',
+            'trip_status' => 'required|string',
+            'remarks' => 'nullable|string|max:255',
+            'is_active' => 'boolean',
+        ], [
+            'employee_id.required' => 'Please select an employee',
+            'departure_id.required' => 'Please select a departure location',
+            'destination_id.required' => 'Please select a destination location',
+            'flight_number.required' => 'Please enter the flight number',
+            'departure_date.required' => 'Please select the departure date',
+            'departure_time.required' => 'Please enter the departure time',
+            'arrival_date.required' => 'Please select the arrival date',
+            'arrival_time.required' => 'Please enter the arrival time',
+            'trip_status.required' => 'Please select the trip status',
+        ]);
+
+        // Create a new trip
+        Trip::create([
+            'employee_id' => $request->employee_id,
+            'departure_id' => $request->departure_id,
+            'destination_id' => $request->destination_id,
+            'flight_number' => $request->flight_number,
+            'departure_date' => $request->departure_date,
+            'departure_time' => $request->departure_time,
+            'arrival_date' => $request->arrival_date,
+            'arrival_time' => $request->arrival_time,
+            'trip_status' => $request->trip_status,
+            'remarks' => $request->remarks,
+            'is_active' => $request->is_active,
+        ]);
+
+        return redirect()->route('trips.index')->with('success', 'Trip successfully created!');
+    }
+
+    // Show the form to edit a trip
+    public function edit($id)
+    {
+        $trip = Trip::findOrFail($id);
+        $employees = Employee::all(); // Assuming Employee model exists
+        $locations = Location::all(); // Assuming Location model exists
+
+        return view('trips.edit', compact('trip', 'employees', 'locations'));
+    }
+
+    // Update an existing trip
+    public function update(Request $request, $id)
+    {
+        $trip = Trip::findOrFail($id);
+
+        $validated = $request->validate([
+            'employee_id' => 'required|integer|exists:employees,id',
+            'departure_id' => 'required|integer|exists:locations,id',
+            'destination_id' => 'required|integer|exists:locations,id',
             'flight_number' => 'required|string|max:255',
             'departure_date' => 'required|date',
             'departure_time' => 'required|date_format:H:i',
@@ -40,56 +110,32 @@ class TripController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        Trip::create($request->all());
-
-        session()->flash('success', 'Trip succesvol aangemaakt.');
-        return redirect()->route('trips.index');
-    }
-
-    // Toon formulier om een trip te bewerken
-    public function edit(Trip $trip)
-    {
-        return view('trips.edit', compact('trip'));
-    }
-
-    // Update een bestaande trip
-    public function update(Request $request, Trip $trip)
-    {
-        $request->validate([
-            'employee_id' => 'required|integer',
-            'departure_id' => 'required|integer',
-            'destination_id' => 'required|integer',
-            'flight_number' => 'required|string|max:255',
-            'departure_date' => 'required|date',
-            'departure_time' => 'required|date_format:H:i',
-            'arrival_date' => 'required|date',
-            'arrival_time' => 'required|date_format:H:i',
-            'trip_status' => 'required|string',
-            'remarks' => 'nullable|string|max:255',
-            'is_active' => 'boolean',
+        // Update the trip
+        $trip->update([
+            'employee_id' => $request->employee_id,
+            'departure_id' => $request->departure_id,
+            'destination_id' => $request->destination_id,
+            'flight_number' => $request->flight_number,
+            'departure_date' => $request->departure_date,
+            'departure_time' => $request->departure_time,
+            'arrival_date' => $request->arrival_date,
+            'arrival_time' => $request->arrival_time,
+            'trip_status' => $request->trip_status,
+            'remarks' => $request->remarks,
+            'is_active' => $request->is_active,
         ]);
 
-        $trip->update($request->all());
-
-        session()->flash('success', 'Trip succesvol bijgewerkt.');
-        return redirect()->route('trips.index');
+        return redirect()->route('trips.index')->with('success', 'Trip successfully updated!');
     }
 
-    // Verwijder een trip
+    // Delete a trip
     public function destroy($id)
     {
         $trip = Trip::findOrFail($id);
+
+        // Delete the trip
         $trip->delete();
 
-        session()->flash('success', 'Trip succesvol verwijderd.');
-        return redirect()->route('trips.index');
-    }
-
-    // Toon trips op het dashboard
-    public function dashboardIndex()
-    {
-        return view('dashboard.trips', [
-            'trips' => Trip::with(['employee', 'departure', 'destination'])->get()
-        ]);
+        return redirect()->route('trips.index')->with('success', 'Trip successfully deleted!');
     }
 }

@@ -8,9 +8,10 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form action="{{ route('trips.update', $trip) }}" method="POST">
+                    <form action="{{ route('trips.update', $trip->id) }}" method="POST">
                         @csrf
                         @method('PUT')
+
                         <!-- Employee ID -->
                         <div class="mb-4">
                             <label for="employee_id" class="block text-sm font-medium text-gray-700">Employee ID</label>
@@ -19,6 +20,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Departure ID -->
                         <div class="mb-4">
                             <label for="departure_id" class="block text-sm font-medium text-gray-700">Departure Location ID</label>
@@ -27,6 +29,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Destination ID -->
                         <div class="mb-4">
                             <label for="destination_id" class="block text-sm font-medium text-gray-700">Destination Location ID</label>
@@ -35,6 +38,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Flight Number -->
                         <div class="mb-4">
                             <label for="flight_number" class="block text-sm font-medium text-gray-700">Flight Number</label>
@@ -43,6 +47,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Departure Date -->
                         <div class="mb-4">
                             <label for="departure_date" class="block text-sm font-medium text-gray-700">Departure Date</label>
@@ -51,6 +56,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Departure Time -->
                         <div class="mb-4">
                             <label for="departure_time" class="block text-sm font-medium text-gray-700">Departure Time</label>
@@ -59,6 +65,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Arrival Date -->
                         <div class="mb-4">
                             <label for="arrival_date" class="block text-sm font-medium text-gray-700">Arrival Date</label>
@@ -67,6 +74,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Arrival Time -->
                         <div class="mb-4">
                             <label for="arrival_time" class="block text-sm font-medium text-gray-700">Arrival Time</label>
@@ -75,6 +83,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Trip Status -->
                         <div class="mb-4">
                             <label for="trip_status" class="block text-sm font-medium text-gray-700">Trip Status</label>
@@ -83,6 +92,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Remarks -->
                         <div class="mb-4">
                             <label for="remarks" class="block text-sm font-medium text-gray-700">Remarks</label>
@@ -91,6 +101,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <!-- Active Status -->
                         <div class="mb-4">
                             <label for="is_active" class="block text-sm font-medium text-gray-700">Active Status</label>
@@ -99,10 +110,8 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <!-- Submit Button -->
-                        <div>
-                            <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700">Update Trip</button>
-                        </div>
+
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Update Trip</button>
                     </form>
                 </div>
             </div>

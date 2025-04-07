@@ -10,7 +10,19 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <!-- ✅ Search field and Add button -->
+                    {{-- ✅ Flash Messages --}}
+                    @if (session('success'))
+                        <div id="success-message" class="bg-green-500 text-white p-4 rounded-md mb-4">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div id="error-message" class="bg-red-500 text-white p-4 rounded-md mb-4">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    {{-- ✅ Search field and button --}}
                     <div class="mb-4 flex justify-between items-center">
                         <div class="w-1/3">
                             <input type="text" id="searchInput" placeholder="Search by customer name..."
@@ -44,25 +56,36 @@
                             <tbody>
                             @foreach ($bookings as $booking)
                                 <tr>
-
-                                    <td class="border px-4 py-2"> {{ ($booking->customer->person)->first_name . ' ' . ($booking->customer->person)->middle_name . ' ' . ($booking->customer->person)->last_name }}</td>
-                                    <td class="border px-4 py-2">{{ $booking->trip->destination->country . ': ' . $booking->trip->destination->airport }}</td>
+                                    <td class="border px-4 py-2">
+                                        {{ $booking->customer->person->first_name }}
+                                        {{ $booking->customer->person->middle_name }}
+                                        {{ $booking->customer->person->last_name }}
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        {{ $booking->trip->destination->country }}: {{ $booking->trip->destination->airport }}
+                                    </td>
                                     <td class="border px-4 py-2">{{ $booking->seat_number }}</td>
                                     <td class="border px-4 py-2">€{{ number_format($booking->price, 2) }}</td>
                                     <td class="border px-4 py-2">{{ $booking->quantity }}</td>
                                     <td class="border px-4 py-2">{{ $booking->special_requests }}</td>
-                                    <td class="border px-4 py-2">{{ $booking->purchase_date . ' - ' .$booking->purchase_time }}</td>
+                                    <td class="border px-4 py-2">{{ $booking->purchase_date }} - {{ $booking->purchase_time }}</td>
                                     <td class="border px-4 py-2 {{ $booking->is_active ? 'text-green-500' : 'text-red-500' }}">
                                         {{ $booking->is_active ? 'Active' : 'Canceled' }}
                                     </td>
                                     <td class="border px-4 py-2">
-                                        <a href="#" class="text-blue-500 mr-2">Edit</a>
-
-                                        <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="inline-block ml-2">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
+                                        <a href="{{ route('bookings.edit', $booking->id) }}" class="text-blue-500 mr-2">Edit</a>
+                                        <!-- Show Delete Button only if Booking is Active -->
+                                        @if ($booking->is_active)
+                                            <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST"
+                                                  class="inline-block ml-2"
+                                                  onsubmit="return confirmDelete('{{ $booking->seat_number }}')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500">Delete</button>
+                                            </form>
+                                        @else
+                                            <span class="text-red-500">Inactive booking cannot be deleted</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -74,40 +97,47 @@
         </div>
     </div>
 
-    <!-- ✅ Search function -->
+    {{-- ✅ JavaScript --}}
     <script>
-        document.getElementById("searchInput").addEventListener("input", function() {
+        // Flash messages verwijderen
+        setTimeout(() => {
+            document.getElementById("success-message")?.style.display = "none";
+            document.getElementById("error-message")?.style.display = "none";
+        }, 3000);
+
+        // Search
+        document.getElementById("searchInput").addEventListener("input", function () {
             let filter = this.value.toLowerCase();
-            let tableBody = document.querySelector("#bookingTable tbody");
-            let tableRows = tableBody.querySelectorAll("tr");
+            let tableRows = document.querySelectorAll("#bookingTable tbody tr");
 
-            let matchFound = false;
-
+            let found = false;
             tableRows.forEach(row => {
-                let nameCell = row.getElementsByTagName("td")[0]; // Get customer name
-                let customerName = nameCell.textContent.trim().toLowerCase();
-
-                if (customerName.includes(filter)) {
+                let name = row.getElementsByTagName("td")[0].textContent.toLowerCase();
+                if (name.includes(filter)) {
                     row.style.display = "";
-                    matchFound = true;
+                    found = true;
                 } else {
                     row.style.display = "none";
                 }
             });
 
-            // Show "No results" message if nothing is found
-            let noResultRow = document.getElementById("noResultRow");
-            if (noResultRow) {
-                noResultRow.remove();
-            }
-
-            if (!matchFound) {
-                let newRow = document.createElement("tr");
-                newRow.id = "noResultRow";
-                newRow.innerHTML = `<td colspan="7" class="border px-4 py-2 text-center text-gray-500">No bookings found</td>`;
-                tableBody.appendChild(newRow);
+            let noResultsMessage = document.getElementById("noResultsMessage");
+            if (!found) {
+                if (!noResultsMessage) {
+                    noResultsMessage = document.createElement("div");
+                    noResultsMessage.id = "noResultsMessage";
+                    noResultsMessage.className = "bg-red-500 text-white p-4 rounded-md mt-4";
+                    noResultsMessage.textContent = "No bookings found with this customer name";
+                    document.querySelector("#bookingTable").insertAdjacentElement("afterend", noResultsMessage);
+                }
+            } else if (noResultsMessage) {
+                noResultsMessage.remove();
             }
         });
-    </script>
 
+        // Confirm delete
+        function confirmDelete(seatNumber) {
+            return confirm(`Weet je zeker dat je de boeking met stoelnummer "${seatNumber}" wilt verwijderen?`);
+        }
+    </script>
 </x-app-layout>
